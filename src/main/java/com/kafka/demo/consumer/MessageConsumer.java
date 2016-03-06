@@ -1,48 +1,39 @@
-package com.aluen.test;
+package com.kafka.demo.consumer;
 
-import kafka.consumer.ConsumerConfig;
+import com.kafka.demo.config.KafkaConfig;
 import kafka.consumer.KafkaStream;
 import kafka.message.MessageAndMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Service
 public class MessageConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
+
     private int numThread = 2;
 
-    private final ExecutorService consumerExecutors;
+    private ExecutorService consumerExecutors = Executors.newFixedThreadPool(numThread);
 
-    private ConsumerConfig consumerConfig;
+    @Autowired
+    private KafkaConfig kafkaConfig;
 
     public MessageConsumer() {
-        this.consumerConfig = consumerConfig();
-        this.numThread = 2;
-        this.consumerExecutors = Executors.newFixedThreadPool(numThread);
     }
 
     public void consumeMessage(MessageHandler handle, String topic) {
-        Consumer consumer = new Consumer(consumerConfig);
+        Consumer consumer = new Consumer(kafkaConfig.consumerConfig());
         List<KafkaStream<byte[], byte[]>> streams = consumer.topicStreams(topic, numThread);
         for (final KafkaStream<byte[], byte[]> stream : streams) {
             consumerExecutors.submit(new Client(stream, handle));
         }
-    }
-
-    private ConsumerConfig consumerConfig() {
-        Properties props = new Properties();
-        props.put("zookeeper.connect", "10.218.145.191:2181,10.218.145.190:2181,10.218.145.189:2181");
-        props.put("group.id", "pns_group");
-        props.put("zookeeper.session.timeout.ms", "6000");
-        props.put("zookeeper.sync.time.ms", "6000");
-        props.put("auto.commit.interval.ms", "2000");
-        return new ConsumerConfig(props);
     }
 
     public void destroy() throws Exception {

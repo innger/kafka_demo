@@ -1,4 +1,4 @@
-package com.aluen.test;
+package com.kafka.demo.test;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

@@ -1,36 +1,32 @@
-package com.aluen.test;
+package com.kafka.demo.test;
 
+import com.kafka.demo.config.KafkaConfig;
+import com.kafka.demo.producer.TopicPollingService;
 import kafka.javaapi.producer.Producer;
-import kafka.producer.ProducerConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class KafkaProduceTest extends BaseTestCase {
-    String topic = "POLLING";
+
     @Autowired
     TopicPollingService topicPollingService;
+
     @Autowired
     TopicPollingService topicPollingService1;
 
-    private String dev_brokerList = "10.218.145.191:9092,10.218.145.190:9092,10.218.145.189:9092";
+    @Autowired
+    private KafkaConfig kafkaConfig;
+
     private Producer<String, String> producer;
 
     @Before
     public void initKafkaProducer() {
-        Properties props = new Properties();
-        props.put("metadata.broker.list", dev_brokerList);
-        props.put("serializer.class", "kafka.serializer.StringEncoder");
-        props.put("request.required.acks", "1");
-        props.put("producer.type", "async");
-        props.put("batch.num.messages", "200");
-        ProducerConfig producerConfig = new ProducerConfig(props);
-        producer = new Producer<String, String>(producerConfig);
+        producer = new Producer<String, String>(kafkaConfig.producerConfig());
     }
 
     // 单个生产者线程，多个kafka producer
@@ -110,7 +106,7 @@ public class KafkaProduceTest extends BaseTestCase {
     public void parallelSingleKakfaProducerTest() throws InterruptedException {
 
         long start2 = System.currentTimeMillis();
-        System.out.println("start2="+start2);
+        System.out.println("start2=" + start2);
         final CountDownLatch latch1 = new CountDownLatch(10);
         ArrayList<Thread> workers1 = new ArrayList<>();
 
@@ -131,7 +127,7 @@ public class KafkaProduceTest extends BaseTestCase {
         for (Thread t : workers1) t.join();
 
         long end2 = System.currentTimeMillis();
-        System.out.println("end2="+end2);
+        System.out.println("end2=" + end2);
         System.out.println(((end2 - start2)));
 
         System.out.println("==============");

@@ -1,15 +1,16 @@
-package com.aluen.test;
+package com.kafka.demo.test;
 
+import com.kafka.demo.producer.TopicPollingService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PollingProduceTest extends BaseTestCase {
-    String topic = "POLLING";
+
     @Autowired
-    TopicPollingService topicPollingService;
+    private TopicPollingService topicPollingService;
 
     @Test
-    public void tst() throws InterruptedException {
+    public void test() throws InterruptedException {
         topicPollingService.sendMessage("1","234");
     }
 }

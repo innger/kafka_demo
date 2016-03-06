@@ -1,32 +1,41 @@
-package com.aluen.test;
+package com.kafka.demo.producer;
 
+import com.kafka.demo.config.ConfigConst;
+import com.kafka.demo.config.KafkaConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Random;
 
-@Component
+@Service
 @Scope("prototype")
 public class TopicPollingService {
+
     private static final Logger logger = LoggerFactory.getLogger(TopicPollingService.class);
+
     private static Random random = new Random();
-    private String pollingTopic = "POLLING";
+
+    private String pollingTopic = ConfigConst.topic;
+
+    //注解producer spring管理
     @Autowired
     private BaseProducer producer;
-    @Autowired
-    KafkaConfig kafkaConfig;
+
     private int pollingNum = 2;
+
+    //多个producer 非spring管理
     private BaseProducer[] producers;
 
 
     public void init() {
-        kafkaConfig = new KafkaConfig();
         producers = new BaseProducer[pollingNum];
+        KafkaConfig kafkaConfig = new KafkaConfig();
         for (int i = 0; i < pollingNum; i++) {
+            //非spring管理,手动new bean
             BaseProducer p = new BaseProducer(pollingTopic, kafkaConfig);
             producers[i] = p;
         }
@@ -36,10 +45,12 @@ public class TopicPollingService {
     public TopicPollingService() {
         init();
     }
+
     public TopicPollingService(int pollingNum) {
         this.pollingNum = pollingNum;
         init();
     }
+
     public void sendMessage(String token, String message) {
         try {
             if (!StringUtils.isEmpty(token)) {

@@ -1,4 +1,4 @@
-package com.aluen.test;
+package com.kafka.demo.config;
 
 import kafka.consumer.ConsumerConfig;
 import kafka.producer.ProducerConfig;
@@ -10,11 +10,6 @@ import java.util.Properties;
 @Component
 @Qualifier("kafkaConfig")
 public class KafkaConfig {
-    private String brokerList = "10.218.145.191:9092,10.218.145.190:9092,10.218.145.189:9092";
-    private String zkConnect = "10.218.145.191:2181,10.218.145.190:2181,10.218.145.189:2181";
-    private String groupId = "pns_group";
-    private String producerType = "async";
-    private String batchNum = "200";
 
     private ConsumerConfig consumerConfig;
     private ProducerConfig producerConfig;
@@ -29,20 +24,20 @@ public class KafkaConfig {
 
     public KafkaConfig() {
         Properties props = new Properties();
-        props.put("zookeeper.connect", zkConnect);
-        props.put("group.id", groupId);
+        props.put("zookeeper.connect", ConfigConst.zkConnect);
+        props.put("group.id", ConfigConst.groupId);
         props.put("zookeeper.session.timeout.ms", "6000");
         props.put("zookeeper.sync.time.ms", "6000");
         props.put("auto.commit.interval.ms", "2000");
         this.consumerConfig = new ConsumerConfig(props);
 
         props = new Properties();
-        props.put("metadata.broker.list", brokerList);
+        props.put("metadata.broker.list", ConfigConst.brokerList);
         props.put("serializer.class", "kafka.serializer.StringEncoder");
-        props.put("partitioner.class", "com.aluen.test.SimplePartitioner");
+        props.put("partitioner.class", "com.kafka.demo.config.SimplePartitioner");
         props.put("request.required.acks", "1");
-        props.put("producer.type", producerType);
-        props.put("batch.num.messages", batchNum);
+        props.put("producer.type", ConfigConst.producerType);
+        props.put("batch.num.messages", ConfigConst.batchNum);
         this.producerConfig = new ProducerConfig(props);
     }
 }

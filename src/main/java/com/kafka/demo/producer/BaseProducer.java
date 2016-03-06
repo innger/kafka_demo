@@ -1,23 +1,32 @@
-package com.aluen.test;
+package com.kafka.demo.producer;
 
+import com.kafka.demo.config.ConfigConst;
+import com.kafka.demo.config.KafkaConfig;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+@Component
 public class BaseProducer {
+
     private static final Logger logger = LoggerFactory.getLogger(BaseProducer.class);
-    private String topic;
+
+    private String topic = ConfigConst.topic;
+
     protected Producer<String, String> producer;
+
     @Qualifier("kafkaConfig")
     @Autowired
     private KafkaConfig kafkaConfig;
+
+    public BaseProducer() {
+    }
 
     public BaseProducer(String topic, KafkaConfig kafkaConfig) {
         this.topic = topic;
@@ -25,7 +34,7 @@ public class BaseProducer {
         this.producer = new Producer<String, String>(kafkaConfig.producerConfig());
     }
 
-//    @PostConstruct
+    @PostConstruct
     public void initProducer() {
         this.producer = new Producer<String, String>(kafkaConfig.producerConfig());
     }

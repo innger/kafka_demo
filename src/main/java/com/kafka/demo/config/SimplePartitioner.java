@@ -1,4 +1,4 @@
-package com.aluen.test;
+package com.kafka.demo.config;
 
 import kafka.producer.Partitioner;
 import kafka.utils.VerifiableProperties;
@@ -6,6 +6,7 @@ import kafka.utils.VerifiableProperties;
 import java.util.Random;
 
 public class SimplePartitioner implements Partitioner {
+
     public SimplePartitioner(VerifiableProperties props) {
     }
 
