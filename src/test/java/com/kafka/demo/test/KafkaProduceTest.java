@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -53,14 +54,15 @@ public class KafkaProduceTest extends BaseTestCase {
     public void testSeqSingleProducer() throws InterruptedException {
         for (int test = 1; test <= 10; test++) {
             long start2 = System.currentTimeMillis();
-            for (int i = 0; i < 100000; i++)
-                topicPollingService.sendMessageByOneProducer("1", "aakak");
-
+            for (int i = 0; i < 10000; i++) {
+                String msg = UUID.randomUUID().toString().replace("-", "");
+                topicPollingService.sendMessageByOneProducer("1", msg);
+                TimeUnit.SECONDS.sleep(3);
+            }
             long end2 = System.currentTimeMillis();
             System.out.println(((end2 - start2)));
             System.out.println("==============");
         }
-        TimeUnit.MINUTES.sleep(1);
     }
 
 

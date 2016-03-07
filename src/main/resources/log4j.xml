@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+
+    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%t]  %c:%L - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="infoLogAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="/home/admin/datasource/logs/dataSource.log"/>
+        <param name="Append" value="true"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%t]  %c:%L - %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="info" />
+            <param name="LevelMax" value="ERROR" />
+        </filter>
+    </appender>
+
+    <appender name="errorLogAppender" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="/home/admin/datasource/logs/error.log"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+        <param name="Append" value="true"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p [%t]  %c:%L - %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="ERROR" />
+            <param name="LevelMax" value="ERROR" />
+        </filter>
+    </appender>
+
+    <logger name="kafka" additivity="false">
+        <level value="info"/>
+        <!--<appender-ref ref="infoLogAppender"/>-->
+        <appender-ref ref="Console" />
+    </logger>
+    <root>
+        <level value="info" />
+        <!--<appender-ref ref="infoLogAppender" />-->
+        <!--<appender-ref ref="errorLogAppender" />-->
+        <appender-ref ref="Console" />
+    </root>
+
+</log4j:configuration>

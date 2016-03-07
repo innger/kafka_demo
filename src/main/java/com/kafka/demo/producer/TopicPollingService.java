@@ -73,6 +73,7 @@ public class TopicPollingService {
                 logger.info("can not push this message to kafka for token is null or blank.");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("Produce message to topic of polling caught an exception", e);
         }
     }
